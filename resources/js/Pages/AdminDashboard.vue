@@ -100,7 +100,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import { useRecordsStore } from '../stores/records';
+import { useRecordsStore } from 'resources/stores/records';
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -115,7 +115,7 @@ const newRecord = ref<RecordForm>({
 });
 
 const createRecord = () => {
-  recordsStore.addRecord({
+  useRecordsStore.addRecord({
     ...newRecord.value,
     status: 'pendente'
   });
@@ -131,7 +131,7 @@ const createRecord = () => {
 };
 
 const updateStatus = (id: string, status: 'recebido' | 'enviado') => {
-  recordsStore.updateStatus(id, status);
+  useRecordsStore.updateStatus(id, status);
 };
 
 const logout = () => {
@@ -139,5 +139,5 @@ const logout = () => {
   router.push('/login');
 };
 
-const records = recordsStore.records;
+const records = useRecordsStore.records;
 </script>
