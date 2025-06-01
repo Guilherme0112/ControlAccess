@@ -3,7 +3,9 @@
 namespace App\Http\Services;
 
 use App\Models\Usuario;
+use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UsuarioService
 {
@@ -13,10 +15,11 @@ class UsuarioService
         return Usuario::all();
     }
 
-    public function buscarUsuario(string $id): Usuario  
+    public function buscarUsuario(string $id): Usuario
     {
         return Usuario::findOrFail($id);
     }
+
 
     public function salvarUsuario(Request $request): Usuario
     {

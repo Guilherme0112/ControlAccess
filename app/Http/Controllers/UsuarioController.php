@@ -20,7 +20,6 @@ class UsuarioController extends Controller
         try {
             $correspondenciaAtualizada = $usuarioService->salvarUsuario($request);
             return response()->json($correspondenciaAtualizada);
-
         } catch (ValidationException $e) {
             return response()->json([
                 "errors" => $e->errors()
@@ -28,27 +27,38 @@ class UsuarioController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 "error" => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 
     public function update(Request $request, UsuarioService $usuarioService, string $id): JsonResponse
     {
-         try {
+        try {
             $correspondenciaAtualizada = $usuarioService->editarUsuario($request, $id);
             return response()->json($correspondenciaAtualizada);
-        } catch (Exception $exception) {
+        } catch (ValidationException $e) {
             return response()->json([
-                "error" => $exception->getMessage()
-            ]);
-        }    
+                "errors" => $e->errors()
+            ], 400);
+        } catch (Exception $e) {
+            return response()->json([
+                "error" => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function destroy(string $idCorrespondencia, UsuarioService $usuarioService): JsonResponse
     {
-        $usuarioService->apagarUsuario($idCorrespondencia);
-        return response()->json([
-            "success" => "Correspondência deletada com sucesso"
-        ], 200);
+        try {
+            $usuarioService->apagarUsuario($idCorrespondencia);
+            return response()->json([
+                "success" => "Correspondência deletada com sucesso"
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "error" => $e->getMessage()
+            ], 500);
+        }
+
     }
 }
