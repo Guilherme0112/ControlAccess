@@ -30,10 +30,12 @@ import { ref } from 'vue';
 import type { LoginRequest } from "../../types/requests/LoginRequest"
 import { fazerLogin } from '../../service/usuarios';
 
+document.title = "Início"
+
 const errors = ref<{ auth?: string[] }>({})
 const login = ref<LoginRequest>({
-  email: 'fsdf@fdsf',
-  senha: 'fsdfs'
+  email: '',
+  senha: ''
 })
 
 const submit = async () => {

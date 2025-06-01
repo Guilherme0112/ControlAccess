@@ -1,19 +1,17 @@
 <?php
 
+use App\Http\Middleware\JwtInertiaMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Login');
-});
+})->name('home');
 
-// ->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/admin', function () {
+Route::middleware(JwtInertiaMiddleware::class)->get('/admin', function () {
     return Inertia::render('AdminDashboard');
-});
+})->name('admin');
 
-
-Route::get('/user', function () {
+Route::middleware(JwtInertiaMiddleware::class)->get('/user', function () {
     return Inertia::render('UserDashboard');
-});
+})->name('user');

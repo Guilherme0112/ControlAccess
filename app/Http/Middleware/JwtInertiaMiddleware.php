@@ -3,12 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
-use Illuminate\Foundation\Configuration\Middleware;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
+use Inertia\Middleware;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
-class JwtMiddleware extends Middleware
+class JwtInertiaMiddleware extends Middleware
 {
     public function handle($request, Closure $next)
     {
@@ -21,8 +20,7 @@ class JwtMiddleware extends Middleware
 
             return $next($request);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Não autenticado'], 401);
+            return redirect("/");
         }
     }
-
 }
