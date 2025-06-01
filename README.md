@@ -1,61 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Sistema de correspondências - Athena Office
 
-## About Laravel
+**Tecnologias:** PHP 8.2, Laravel 12  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Visão Geral
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Esta API foi desenvolvida com Laravel 12 e PHP 8.2.  
+Possui rotas que utilizam Inertia.js para o front-end e rotas REST para a API com autenticação JWT.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Estrutura de pastas
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```
+/app
+├── Http
+│   ├── Controllers
+│   │   ├── AuthController.php               # Controller referente a autenticação do usuário
+│   │   ├── UsuarioController.php            # Controller referente ao usuário
+│   │   └── CorrespondenciaController.php    # Controller referente as correspondências
+│   ├── Middleware
+│   │   ├── JwtMiddleware.php                # Middleware da API
+│   │   └── HandleInertiaRequests.php        # Middleware do Inertia
+│   └── Requests
+├── Models
+│   ├── Usuario.php                          # Modelo do usuário
+│   └── Correspondencia.php                  # Modelo das correspondências
+├── Services
+│   ├── UsuarioService.php                   # Métodos e regra de negócio do usuário
+│   ├── AuthService.php                      # Métodos e regra de negócio da autenticação
+│   └── CorrespondenciaService.php           # Métodos e regra de negócio das correspondências
+/routes
+├── api.php                                  # Rotas da API
+└── web.php                                  # Rotas do Inertia
+/resources
+├── types                                    # Modelo para entidades do projeto
+├── utils                                    # Funções que serão úteis no projeto
+├── service                                  # Funções que chama o backend, referente a cada modelo          
+├── js
+│   ├── Pages
+│   │   ├── Login.vue                        # Tela de Login (Home)
+│   │   ├── AdminDashboard.vue               # Tela de dashboard do admin
+│   │   └── UserDashboard.vue                # Tela de dashboard do usuario
+└── views
+    └── welcome.blade.php                    # Template para as views
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Rotas Inertia (Web)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Método | Rota     | Descrição                        | Autenticação         |
+|--------|----------|--------------------------------|---------------------|
+| GET    | `/`      | Página inicial, formulário de login | Não requer autenticação |
+| GET    | `/user`  | Dashboard do usuário            | Requer autenticação  |
+| GET    | `/admin` | Dashboard do administrador     | Requer autenticação  |
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Rotas API (REST)
 
-## Contributing
+### Autenticação
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Método | Rota     | Descrição                           | Autenticação          | Entrada                   | Resposta                  |
+|--------|----------|-----------------------------------|-----------------------|--------------------------|---------------------------|
+| POST   | `/login` | Autenticar usuário                 | Não requer             | JSON: `{ email, senha }` | JSON: token e dados       |
+| POST   | `/logout`| Encerrar sessão                   | Requer                | -                        | JSON: status              |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Usuários (Somente com autenticação)
 
-## Security Vulnerabilities
+| Método | Rota            | Descrição                   | Entrada                                          | Resposta                   |
+|--------|-----------------|-----------------------------|-------------------------------------------------|----------------------------|
+| GET    | `/usuarios`     | Listar todos os usuários     | -                                               | JSON: lista de usuários    |
+| POST   | `/usuarios`     | Criar novo usuário           | JSON: `{ nome, email, senha }`                   | JSON: usuário criado       |
+| PUT    | `/usuarios/{id}`| Atualizar dados de usuário   | JSON: `{ nome?, email?, senha? }` (campos opcionais) | JSON: usuário atualizado  |
+| DELETE | `/usuarios/{id}`| Deletar usuário              | -                                               | JSON: status               |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+### Correspondências (Somente com autenticação)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Método | Rota                | Descrição                   | Entrada                                                    | Resposta                   |
+|--------|---------------------|-----------------------------|------------------------------------------------------------|----------------------------|
+| GET    | `/correspondencias`  | Listar todas as correspondências | -                                                        | JSON: lista de correspondências |
+| POST   | `/correspondencias`  | Criar nova correspondência  | JSON multipart/form-data: `{ nome, email_usuario, caixa_postal, unidade, status, data_recebimento, anexo }`<br>- Anexo: jpg, png, jpeg | JSON: correspondência criada |
+| PUT    | `/correspondencias/{id}`| Atualizar correspondência | JSON: campos para atualizar                                | JSON: correspondência atualizada |
+| DELETE | `/correspondencias/{id}`| Deletar correspondência    | -                                                          | JSON: status               |
+
+---
+
+## Notas importantes
+
+- Todas as rotas protegidas requerem o envio do token JWT via cookie `auth`.
+- O campo `anexo` para correspondências aceita arquivos de imagem (jpg, png, jpeg).
+- Respostas de erro para autenticação inválida retornam JSON com status HTTP 401 e mensagem adequada.
+
+---
+
+## Exemplo de requisição para login
+
+```bash
+curl -X POST https://seu-dominio.com/api/login \
+-H "Content-Type: application/json" \
+-d '{"email": "usuario@exemplo.com", "senha": "123456"}'
+```
+
+Resposta esperada:
+
+```json
+{
+    
+    "usuario": {
+        "id": 1,
+        "nome": "Usuário Exemplo",
+        "email": "usuario@exemplo.com"
+    },
+    "token": "seu-token-aqui"
+}
+```
+
+---
+
+## Contato
+
+Em caso de dúvidas, entre em contato com a equipe de desenvolvimento.
+
+---
