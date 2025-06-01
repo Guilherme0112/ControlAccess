@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,8 +13,7 @@ Route::get('/admin', function () {
     return Inertia::render('AdminDashboard');
 });
 
+
 Route::get('/user', function () {
     return Inertia::render('UserDashboard');
 });
-
-require __DIR__.'/auth.php';

@@ -36,21 +36,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { nextTick } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { useAuthStore } from '../../stores/auth';
 
-const auth = useAuthStore();
 const email = ref('');
 const password = ref('');
-
-const handleLogin = async () => {
-  if (auth.login(email.value, password.value)) {
-    await nextTick();
-    router.push('/admin');
-  } else {
-    alert('Invalid credentials');
-  }
-};
-
 </script>

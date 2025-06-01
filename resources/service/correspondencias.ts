@@ -1,0 +1,55 @@
+
+export async function buscarCorrespondencias() {
+    try {
+        const res = await fetch("/api/correspondencias", {
+            method: "GET"
+        });
+
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function salvarCorrespondencia(correspondencia: Correspondencia) {
+    try {
+
+        const res = await fetch("/api/correspondencias", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(correspondencia)
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw errorData;
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function editarCorrespondencia(correspondencia: Correspondencia) {
+    try {
+        const res = await fetch("/api/correspondencias", {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(correspondencia)
+        });
+
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export async function apagarCorrespondencia(correspondencia: Correspondencia) {
+    console.log(correspondencia)
+}

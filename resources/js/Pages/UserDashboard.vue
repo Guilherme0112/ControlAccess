@@ -4,7 +4,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <h1 class="text-2xl font-bold text-gray-900">Minhas Correspondências</h1>
-          <button @click="logout" class="btn btn-danger">Sair</button>
+          <button class="btn btn-danger">Sair</button>
         </div>
       </div>
     </nav>
@@ -50,23 +50,3 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../stores/auth';
-import { useRecordsStore } from '../../stores/records';
-
-const router = useRouter();
-const auth = useAuthStore();
-const recordsStore = useRecordsStore();
-
-const userRecords = computed(() => {
-  return recordsStore.getRecordsByEmail(auth.user?.email || '');
-});
-
-const logout = () => {
-  auth.logout();
-  router.push('/login');
-};
-</script>
