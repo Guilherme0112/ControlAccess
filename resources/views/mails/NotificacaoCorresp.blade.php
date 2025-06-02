@@ -46,7 +46,7 @@
 
     <p>Informamos que uma nova correspondência foi recebida para você:</p>
 
-    <p>Favor aprovar a abertura da sua correspondência na nossa plataforma <a href="https://www.youtube.com/">clicando aqui</a></p>
+    <p>Favor, aprovar a abertura da sua correspondência na nossa plataforma <a href="https://www.youtube.com/">clicando aqui</a></p>
 
     <div class="footer">
       Esta é uma mensagem automática. Não é necessário respondê-la.

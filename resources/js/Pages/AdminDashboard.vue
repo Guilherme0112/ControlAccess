@@ -86,9 +86,9 @@
               <select v-model="correspondencia.status" required
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <option value="" disabled selected>Selecione o status</option>
-                <option value="recebido">Recebido</option>
-                <option value="enviado">Enviado</option>
+                <option value="cadastrado">Cadastrado</option>
                 <option value="notificado">Notificado</option>
+                <option value="enviado">Enviado</option>
               </select>
               <p v-if="erros.errors?.status" class="text-red-500 text-sm mt-1">{{ erros.errors.status[0] }}</p>
             </div>
@@ -169,7 +169,7 @@
                 {{ correspondencia.remetente || "-" }}
               </td>
               <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
-                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'recebido',
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
                 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
                 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
                 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
@@ -178,7 +178,7 @@
               </td>
               <td>
                 <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  @click="notificarChegada(correspondencia.email_usuario)">
+                  @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)">
                   Notificar recebimento
                 </button>
               </td>
@@ -206,28 +206,31 @@ const correspondencia = ref<Correspondencia>({
   email_usuario: "",
   caixa_postal: "",
   unidade: "",
-  status: "recebido",
+  status: "cadastrado",
   remetente: "",
   data_recebimento: new Date(),
   correspondencia: null
 });
 
 
-onMounted(async () => {
+onMounted(async() => {
   const cor = await buscarCorrespondencias();
   correspondencias.value = cor;
 })
 
-const notificarChegada = async(email: string) => {
+const notificarChegada = async(email: string, id: string) => {
   try {
-    const res = await notificacaoChegada(email);
-    console.log(res);
+    await notificacaoChegada(email, id);
+    const correspondenciaAtual = correspondencias.value.find(c => c.id === id);
+    if (correspondenciaAtual) {
+      correspondenciaAtual.status = 'notificado';
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
-const submit = async () => {
+const submit = async() => {
   try {
     const res = await salvarCorrespondencia(correspondencia.value);
     correspondencias.value.push(res);
@@ -238,11 +241,12 @@ const submit = async () => {
       caixa_postal: "",
       unidade: "",
       remetente: "",
-      status: "recebido",
+      status: "cadastrado",
       data_recebimento: new Date(),
       correspondencia: null
     };
   } catch (error: any) {
+    console.log(error);
     erros.value = error;
   }
 }

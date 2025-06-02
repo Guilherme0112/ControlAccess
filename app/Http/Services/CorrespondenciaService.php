@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Http\Enum\Status;
 use App\Models\Correspondencia;
 use Illuminate\Http\Request;
 
@@ -13,14 +14,18 @@ class CorrespondenciaService
         return Correspondencia::all();
     }
 
-    public function buscarCorrespondencia(string $id)
+    public function buscarCorrespondencia(string $idCorrespondencia)
     {
-        return Correspondencia::findOrFail($id);
+        return Correspondencia::findOrFail($idCorrespondencia);
     }
 
-    public function buscarCorrespondenciasPorUsuario()
+    public function alterarStatusCorrespondencia(Status $novoStatus, string $idCorrespondencia): Correspondencia
     {
+        $correspondencia = Correspondencia::findOrFail($idCorrespondencia);
+        $correspondencia["status"] = $novoStatus;
+        $correspondencia->update();
 
+        return $correspondencia;
     }
 
     public function salvarCorrespondencia(Request $request): Correspondencia
@@ -30,7 +35,8 @@ class CorrespondenciaService
             "email_usuario" => "required|email|exists:usuarios,email",
             "caixa_postal" => "required",
             "unidade" => "required",
-            "status" => "required",
+            "remetente" => "required",
+            "status" => "required|in:cadastrado,entregue,devolvido",
             "data_recebimento" => "required|date",
             "correspondencia" => "nullable|file|mimes:png,jpg,jpeg|max:2048"
         ]);
@@ -45,6 +51,7 @@ class CorrespondenciaService
             "email_usuario" => "required|email|exists:usuarios,email",
             "caixa_postal" => "required",
             "unidade" => "required",
+            "remetente" => "required",
             "status" => "required",
             "data_recebimento" => "required|date",
             "correspondencia" => "nullable|file|mimes:png,jpg,jpeg|max:2048"

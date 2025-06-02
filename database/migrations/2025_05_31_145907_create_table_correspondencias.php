@@ -20,7 +20,8 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->string('caixa_postal');
             $table->string('unidade');
-            $table->string('status');
+            $table->string('remetente');
+            $table->enum('status', ["enviado", "cadastrado", "notificado"]);
             $table->dateTime('data_recebimento');
             $table->string('correspondencia')->nullable();
             $table->timestamps();

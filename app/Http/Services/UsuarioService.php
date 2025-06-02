@@ -15,9 +15,9 @@ class UsuarioService
         return Usuario::all();
     }
 
-    public function buscarUsuario(string $id): Usuario
+    public function buscarUsuarioPorEmail(string $email): Usuario
     {
-        return Usuario::findOrFail($id);
+        return Usuario::where("email", $email)->first();
     }
 
 

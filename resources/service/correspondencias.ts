@@ -51,17 +51,18 @@ export async function editarCorrespondencia(correspondencia: Correspondencia) {
 }
 
 
-export async function notificacaoChegada(email: string) {
+export async function notificacaoChegada(email: string, idCorrespondencia: string) {
     try {
-
-        console.log(JSON.stringify({ "email": email }))
         const res = await fetch("/api/correspondencias/notificar-chegada", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             credentials: "include",
-            body: JSON.stringify({ "email": email })
+            body: JSON.stringify({ 
+                "email": email,
+                "idCorrespondencia": idCorrespondencia
+            })
         });
 
         return await res.json();

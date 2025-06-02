@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enum\Status;
 use App\Http\Services\CorrespondenciaService;
 use App\Http\Services\EmailService;
+use App\Http\Services\UsuarioService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,17 +60,21 @@ class CorrespondenciaController extends Controller
     }
 
     
-    public function notificarRecebimento(EmailService $emailService, Request $request): JsonResponse
+    public function notificarRecebimento(EmailService $emailService, UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
-
         try {
-            $emailService->sendEmail($request->input("email"));
-            
-            return response()->json(["success" => "Email enviado com sucesso"]);
+            $email = $request->input("email");
+            $idCorrespondencia = $request->input("idCorrespondencia");
+            $usuario = $usuarioService->buscarUsuarioPorEmail($email);
+
+            $emailService->sendEmail($usuario);
+
+            $correspondenciaService->alterarStatusCorrespondencia(Status::NOTIFICADO, $idCorrespondencia);
+
+            return response()->json(["success" => "Usuário notificado com sucesso"]);
         } catch (Exception $e){
             return response()->json(["error" => $e->getMessage()], 500);
         }
-        
 
     }
 
