@@ -19,3 +19,4 @@ Route::middleware(JwtMiddleware::class)->post('/correspondencias', [Corresponden
 Route::middleware(JwtMiddleware::class)->put('/correspondencias/{id}', [CorrespondenciaController::class,'update'])->name('correspondencia.update');
 Route::middleware(JwtMiddleware::class)->delete('/correspondencias/{id}', [CorrespondenciaController::class,'destroy'])->name('correspondencia.destroy');
 
+Route::post('/correspondencias/notificar-chegada', [CorrespondenciaController::class,'send'])->name('correspondencia.send');

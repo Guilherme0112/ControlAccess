@@ -51,6 +51,24 @@ export async function editarCorrespondencia(correspondencia: Correspondencia) {
 }
 
 
+export async function notificacaoChegada(email: string) {
+    try {
+
+        console.log(JSON.stringify({ "email": email }))
+        const res = await fetch("/api/correspondencias/notificar-chegada", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ "email": email })
+        });
+
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
 export async function apagarCorrespondencia(correspondencia: Correspondencia) {
     console.log(correspondencia)
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\CorrespondenciaService;
+use App\Http\Services\EmailService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,6 +57,20 @@ class CorrespondenciaController extends Controller
         }
     }
 
+    
+    public function notificarRecebimento(EmailService $emailService, Request $request): JsonResponse
+    {
+
+        try {
+            $emailService->sendEmail($request->input("email"));
+            
+            return response()->json(["success" => "Email enviado com sucesso"]);
+        } catch (Exception $e){
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+        
+
+    }
 
     public function destroy(string $idCorrespondencia, CorrespondenciaService $correspondenciaService): JsonResponse
     {

@@ -33,7 +33,7 @@ import { router } from '@inertiajs/vue3';
 
 const errors = ref<{ auth?: string[] }>({})
 const login = ref<LoginRequest>({
-  email: 'thiago@gmail.com',
+  email: 'admin@admin.com',
   senha: '123456'
 })
 
