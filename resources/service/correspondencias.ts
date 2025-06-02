@@ -2,7 +2,8 @@
 export async function buscarCorrespondencias() {
     try {
         const res = await fetch("/api/correspondencias", {
-            method: "GET"
+            method: "GET",
+            credentials: "include"
         });
 
         return await res.json();

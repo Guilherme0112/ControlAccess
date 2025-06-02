@@ -13,11 +13,18 @@ class JwtMiddleware extends Middleware
     public function handle($request, Closure $next)
     {
         try {
-            $token = $request->cookie('auth');
-            if (!$token)
-                throw new Exception('Token ausente');
+            $cookieHeader = $request->header('cookie');
+            $token = null;
+            if ($cookieHeader) {
+                preg_match('/auth=([^;]+)/', $cookieHeader, $matches);
+                if (isset($matches[1])) {
+                    $token = urldecode($matches[1]);
+                }
+            }
 
-            JWTAuth::setToken($token)->authenticate();
+            if (!$token) {
+                return response()->json(['error' => 'Token ausente'], 401);
+            }
 
             return $next($request);
         } catch (Exception $e) {

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 class AuthController extends Controller
 {
 
@@ -21,20 +20,10 @@ class AuthController extends Controller
 
             $token = JWTAuth::fromUser($usuario);
 
-            return response()->json([
-                "usuario" => $usuario,
-                "token" => $token
-            ])->cookie(
-                'auth',
-                $token,
-                60 * 4,
-                '/',
-                null,
-                false,
-                true,
-                false,
-                'Strict'
-            );
+            return response()
+                ->json(['usario' => $usuario, "token" => $token])
+                ->cookie('auth', $token, 60 * 24 * 30, '/', null, false, true);
+
         } catch (ValidationException $e) {
             return response()->json([
                 "errors" => $e->errors()

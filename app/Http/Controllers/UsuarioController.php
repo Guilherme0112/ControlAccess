@@ -15,6 +15,7 @@ class UsuarioController extends Controller
         return response()->json($usuarioService->buscarUsuarios());
     }
 
+
     public function store(Request $request, UsuarioService $usuarioService): JsonResponse
     {
         try {

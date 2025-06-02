@@ -8,7 +8,26 @@ export async function fazerLogin(loginRequest: LoginRequest) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(loginRequest )
+            credentials: "include",
+            body: JSON.stringify(loginRequest)
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw errorData;
+        }
+
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
+export async function fazerLogout() {
+    try {
+
+        const res = await fetch("/api/logout", {
+            method: "POST",
+            credentials: "include",
         });
 
         if (!res.ok) {

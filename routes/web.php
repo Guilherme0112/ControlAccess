@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\JwtInertiaMiddleware;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,3 +16,8 @@ Route::middleware(JwtInertiaMiddleware::class)->get('/admin', function () {
 Route::middleware(JwtInertiaMiddleware::class)->get('/user', function () {
     return Inertia::render('UserDashboard');
 })->name('user');
+
+
+Route::get("/me", function(Request $request) {
+    dd($request);
+});

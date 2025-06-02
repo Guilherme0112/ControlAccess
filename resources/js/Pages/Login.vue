@@ -29,22 +29,21 @@
 import { ref } from 'vue';
 import type { LoginRequest } from "../../types/requests/LoginRequest"
 import { fazerLogin } from '../../service/usuarios';
-
-document.title = "Início"
+import { router } from '@inertiajs/vue3';
 
 const errors = ref<{ auth?: string[] }>({})
 const login = ref<LoginRequest>({
-  email: '',
-  senha: ''
+  email: 'thiago@gmail.com',
+  senha: '123456'
 })
 
 const submit = async () => {
   try {
     await fazerLogin(login.value);
+    router.visit("/admin");
   } catch (e: any) {
+    // console.log(e)
     errors.value = e.errors.auth
   }
 };
-
-
 </script>

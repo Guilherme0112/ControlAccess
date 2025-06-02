@@ -26,7 +26,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <button class="btn btn-danger">Sair</button>
+          <button class="btn btn-danger" @click="logout">Sair</button>
         </div>
       </div>
     </nav>
@@ -178,6 +178,8 @@
 import { formatDate } from '../../utils/formatter';
 import { buscarCorrespondencias, salvarCorrespondencia } from '../../service/correspondencias';
 import { onMounted, ref } from 'vue';
+import { fazerLogout } from '../../service/usuarios';
+import { router } from '@inertiajs/vue3';
 
 const correspondencias = ref<Correspondencia[]>([]);
 const erros = ref<{ [key: string]: string[] }>({});
@@ -207,6 +209,17 @@ const submit = async () => {
   } catch (error: any) {
 
     erros.value = error;
+  }
+}
+
+const logout = async() =>{
+  try {
+    await fazerLogout();
+    router.visit("/");
+  } catch (error: any) {
+
+    console.log(error);
+    // erros.value = error;
   }
 }
 
