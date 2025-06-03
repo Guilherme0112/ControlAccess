@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('caixa_postal');
             $table->string('unidade');
             $table->string('remetente');
-            $table->enum('status', ["enviado", "cadastrado", "notificado"]);
+            $table->enum('status', ["enviado", "cadastrado", "notificado", "aprovado"]);
             $table->dateTime('data_recebimento');
             $table->string('correspondencia')->nullable();
             $table->timestamps();

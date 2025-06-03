@@ -36,7 +36,7 @@ class CorrespondenciaService
             "caixa_postal" => "required",
             "unidade" => "required",
             "remetente" => "required",
-            "status" => "required|in:cadastrado,entregue,devolvido",
+            "status" => "required|in:cadastrado,entregue,aprovado,devolvido",
             "data_recebimento" => "required|date",
             "correspondencia" => "nullable|file|mimes:png,jpg,jpeg|max:2048"
         ]);

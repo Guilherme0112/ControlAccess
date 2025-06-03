@@ -59,7 +59,7 @@
               <input v-model="correspondencia.email_usuario" type="email" required
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
               <p v-if="erros.errors?.email_usuario" class="text-red-500 text-sm mt-1">{{ erros.errors.email_usuario[0]
-                }}</p>
+              }}</p>
             </div>
             <div>
               <label class="form-label">Caixa Postal *</label>
@@ -88,6 +88,7 @@
                 <option value="" disabled selected>Selecione o status</option>
                 <option value="cadastrado">Cadastrado</option>
                 <option value="notificado">Notificado</option>
+                <option value="aprovado">Aprovado</option>
                 <option value="enviado">Enviado</option>
               </select>
               <p v-if="erros.errors?.status" class="text-red-500 text-sm mt-1">{{ erros.errors.status[0] }}</p>
@@ -168,14 +169,18 @@
               <td class="px-6 py-4">
                 {{ correspondencia.remetente || "-" }}
               </td>
+              <td>
               <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
                 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
                 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
                 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
+                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
                 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
               }">
                 {{ correspondencia.status || '-' }}
               </td>
+              </td>
+
               <td>
                 <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)">
@@ -213,12 +218,12 @@ const correspondencia = ref<Correspondencia>({
 });
 
 
-onMounted(async() => {
+onMounted(async () => {
   const cor = await buscarCorrespondencias();
   correspondencias.value = cor;
 })
 
-const notificarChegada = async(email: string, id: string) => {
+const notificarChegada = async (email: string, id: string) => {
   try {
     await notificacaoChegada(email, id);
     const correspondenciaAtual = correspondencias.value.find(c => c.id === id);
@@ -230,7 +235,7 @@ const notificarChegada = async(email: string, id: string) => {
   }
 }
 
-const submit = async() => {
+const submit = async () => {
   try {
     const res = await salvarCorrespondencia(correspondencia.value);
     correspondencias.value.push(res);

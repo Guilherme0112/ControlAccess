@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaController extends Controller
 {
@@ -18,7 +19,7 @@ class CorrespondenciaController extends Controller
         return response()->json($correspondenciaService->buscarCorrespondencias());
     }
 
-    
+
     public function show(CorrespondenciaService $correspondenciaService): JsonResponse
     {
         return response()->json($correspondenciaService->buscarCorrespondenciasPorUsuario());
@@ -59,7 +60,7 @@ class CorrespondenciaController extends Controller
         }
     }
 
-    
+
     public function notificarRecebimento(EmailService $emailService, UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
         try {
@@ -72,7 +73,33 @@ class CorrespondenciaController extends Controller
             $correspondenciaService->alterarStatusCorrespondencia(Status::NOTIFICADO, $idCorrespondencia);
 
             return response()->json(["success" => "Usuário notificado com sucesso"]);
-        } catch (Exception $e){
+        } catch (Exception $e) {
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+    }
+
+    public function test(Request $request)
+    {
+
+        dd($request->cookie("auth"));
+        $token = $request->header("cookie");
+        preg_match('/auth=([^;]+)/', $token, $matches);
+        if (isset($matches[1])) {
+            $token = urldecode($matches[1]);
+        }
+
+        return response()->json(["token" => $token]);
+    }
+
+    public function aprovarAbertura(UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
+    {
+        try {
+            $idCorrespondencia = $request->input("idCorrespondencia");
+            // $usuarioService->buscarUsuarioPorEmail($email);
+            $correspondenciaService->alterarStatusCorrespondencia(Status::APROVADO, $idCorrespondencia);
+
+            return response()->json(["success" => "Usuário notificado com sucesso"]);
+        } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()], 500);
         }
 
