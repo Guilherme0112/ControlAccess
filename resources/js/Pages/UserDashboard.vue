@@ -4,7 +4,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <h1 class="text-2xl font-bold text-gray-900">Minhas Correspondências</h1>
-          <button class="btn btn-danger">Sair</button>
+          <button class="btn btn-danger" @click="fazerLogout">Sair</button>
         </div>
       </div>
     </nav>
@@ -88,6 +88,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { fazerLogout } from '../../service/usuarios';
 import { buscarCorrespondencias } from '../../service/correspondencias';
 import { formatDate } from '../../utils/formatter';
 import { onMounted, ref } from 'vue';

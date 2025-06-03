@@ -1,4 +1,5 @@
 import { LoginRequest } from "resources/types/requests/LoginRequest";
+import { router } from "@inertiajs/vue3"
 
 export async function fazerLogin(loginRequest: LoginRequest) {
     try {
@@ -35,7 +36,7 @@ export async function fazerLogout() {
             throw errorData;
         }
 
-        return await res.json();
+        return router.visit("/");
     } catch (error) {
         throw error;
     }

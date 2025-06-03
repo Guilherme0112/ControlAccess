@@ -26,7 +26,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <button class="btn btn-danger" @click="logout">Sair</button>
+          <button class="btn btn-danger" @click="fazerLogout">Sair</button>
         </div>
       </div>
     </nav>
@@ -256,15 +256,6 @@ const submit = async () => {
   }
 }
 
-const logout = async () => {
-  try {
-    await fazerLogout();
-    router.visit("/");
-  } catch (error: any) {
-    console.log(error);
-    // erros.value = error;
-  }
-}
 
 const mostrarFormulario = ref(false)
 const toggleFormulario = () => {
