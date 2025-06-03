@@ -21,5 +21,3 @@ Route::middleware(JwtMiddleware::class)->delete('/correspondencias/{id}', [Corre
 
 Route::post('/correspondencias/notificar-chegada', [CorrespondenciaController::class,'notificarRecebimento'])->name('correspondencia.notificarRecebimento');
 Route::post('/correspondencias/aprovar-abertura', [CorrespondenciaController::class,'aprovarAbertura'])->name('correspondencia.aprovarAbertura');
-
-Route::post('/correspondencias/test', [CorrespondenciaController::class,'test'])->name('correspondencia.test');

@@ -10,6 +10,9 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaController extends Controller
@@ -78,31 +81,24 @@ class CorrespondenciaController extends Controller
         }
     }
 
-    public function test(Request $request)
-    {
-
-        dd($request->cookie("auth"));
-        $token = $request->header("cookie");
-        preg_match('/auth=([^;]+)/', $token, $matches);
-        if (isset($matches[1])) {
-            $token = urldecode($matches[1]);
-        }
-
-        return response()->json(["token" => $token]);
-    }
-
     public function aprovarAbertura(UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
         try {
+
+            $token = $request->cookie("auth");
             $idCorrespondencia = $request->input("idCorrespondencia");
-            // $usuarioService->buscarUsuarioPorEmail($email);
+       
+            $payload = JWTAuth::setToken($token)->getPayload()->toArray();
+            
+            $loginEmail = $payload["email"];
+            $usuarioService->buscarUsuarioPorEmail($loginEmail);
+
             $correspondenciaService->alterarStatusCorrespondencia(Status::APROVADO, $idCorrespondencia);
 
             return response()->json(["success" => "Usuário notificado com sucesso"]);
         } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()], 500);
         }
-
     }
 
     public function destroy(string $idCorrespondencia, CorrespondenciaService $correspondenciaService): JsonResponse
