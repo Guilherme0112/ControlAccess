@@ -26,9 +26,4 @@ class AuthService
 
         return $usuario;
     }
-
-    public function logout(): void
-    {
-
-    }
 }

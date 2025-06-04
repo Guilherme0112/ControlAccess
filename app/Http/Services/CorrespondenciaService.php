@@ -5,18 +5,29 @@ namespace App\Http\Services;
 use App\Http\Enum\Status;
 use App\Models\Correspondencia;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaService
 {
 
-    public function buscarCorrespondencias()
+    public function buscarCorrespondencias(Request $request)
     {
-        return Correspondencia::all();
+        $payload = JWTAuth::setToken(
+            $request->cookie("auth")
+        )->getPayload()->toArray();
+
+        $emailUsuario = $payload["email"];
+        return Correspondencia::where("email_usuario", $emailUsuario);
     }
 
     public function buscarCorrespondencia(string $idCorrespondencia)
     {
         return Correspondencia::findOrFail($idCorrespondencia);
+    }
+
+    public function buscarCorrespondenciasPorEmail(string $emailUsuario)
+    {
+        return Correspondencia::where("email_usuario", $emailUsuario);
     }
 
     public function alterarStatusCorrespondencia(Status $novoStatus, string $idCorrespondencia): Correspondencia

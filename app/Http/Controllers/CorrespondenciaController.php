@@ -10,16 +10,13 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaController extends Controller
 {
-    public function index(CorrespondenciaService $correspondenciaService): JsonResponse
+    public function index(CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
-        return response()->json($correspondenciaService->buscarCorrespondencias());
+        return response()->json($correspondenciaService->buscarCorrespondencias($request));
     }
 
 

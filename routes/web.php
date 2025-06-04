@@ -16,8 +16,3 @@ Route::middleware(JwtInertiaMiddleware::class)->get('/admin', function () {
 Route::middleware(JwtInertiaMiddleware::class)->get('/user', function () {
     return Inertia::render('UserDashboard');
 })->name('user');
-
-
-Route::get("/me", function(Request $request) {
-    dd($request);
-});

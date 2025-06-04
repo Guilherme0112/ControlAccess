@@ -3,9 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\Usuario;
-use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class UsuarioService
 {
