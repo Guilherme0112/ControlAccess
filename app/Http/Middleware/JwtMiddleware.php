@@ -19,11 +19,7 @@ class JwtMiddleware extends Middleware
                 throw new Exception("Unauthorized");
             }
 
-            if ($tokenCookie) {
-                JWTAuth::setToken($tokenCookie)->authenticate();
-                return $next($request);
-            }
-
+            JWTAuth::setToken($tokenCookie)->authenticate();
             return $next($request);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 401);
