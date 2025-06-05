@@ -22,6 +22,7 @@ class Usuario extends Authenticatable implements JWTSubject
         'nome',
         'email',
         'senha',
+        'role'
     ];
 
     /**
@@ -32,6 +33,10 @@ class Usuario extends Authenticatable implements JWTSubject
     protected $hidden = [
         'senha',
         'remember_token',
+    ];
+
+    protected $cats = [
+        "role" => Role::class
     ];
 
     /**

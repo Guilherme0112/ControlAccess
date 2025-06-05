@@ -59,7 +59,7 @@
               <input v-model="correspondencia.email_usuario" type="email" required
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
               <p v-if="erros.errors?.email_usuario" class="text-red-500 text-sm mt-1">{{ erros.errors.email_usuario[0]
-              }}</p>
+                }}</p>
             </div>
             <div>
               <label class="form-label">Caixa Postal *</label>
@@ -150,7 +150,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white" v-for="correspondencia in correspondencias" :key="correspondencia.id">
+            <tr class="bg-white" v-for="correspondencia in correspondencias" :key="correspondencia.id"
+              v-if="correspondencias.length > 0">
               <td class="px-6 py-4">
                 {{ correspondencia.nome || "-" }}
               </td>
@@ -173,19 +174,26 @@
               <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
                 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
                 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
-                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
                 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
+                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
                 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
               }">
                 {{ correspondencia.status || '-' }}
               </td>
               </td>
-
-              <td>
+              <td v-if="correspondencia.status === 'cadastrado'">
                 <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)">
                   Notificar recebimento
                 </button>
+              </td>
+              <td v-else class="px-6 py-4">
+                -
+              </td>
+            </tr>
+            <tr v-else>
+              <td class="px-6 py-4 text-center text-gray-500" colspan="8">
+                Nenhuma correspondência encontrada.
               </td>
             </tr>
           </tbody>
@@ -200,7 +208,6 @@ import { formatDate } from '../../utils/formatter';
 import { buscarCorrespondencias, notificacaoChegada, salvarCorrespondencia } from '../../service/correspondencias';
 import { onMounted, ref } from 'vue';
 import { fazerLogout } from '../../service/usuarios';
-import { router } from '@inertiajs/vue3';
 
 const correspondencias = ref<Correspondencia[]>([]);
 const erros = ref<{ [key: string]: string[] }>({});

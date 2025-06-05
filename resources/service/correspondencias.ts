@@ -79,6 +79,25 @@ export async function notificacaoChegada(email: string, idCorrespondencia: strin
         throw error;
     }
 }
+
+export async function aprovarAbertura(idCorrespondencia: string) {
+    try {
+        const res = await fetch(`/api/correspondencias/aprovar-abertura`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ 
+                "idCorrespondencia": idCorrespondencia
+            })
+        });
+
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
 export async function apagarCorrespondencia(correspondencia: Correspondencia) {
     console.log(correspondencia)
 }
