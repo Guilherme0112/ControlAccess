@@ -5,7 +5,18 @@ export async function buscarCorrespondencias() {
             method: "GET",
             credentials: "include"
         });
+        return await res.json();
+    } catch (error) {
+        throw error;
+    }
+}
 
+export async function buscarCorrespondenciasPorSessao() {
+    try {
+        const res = await fetch("/api/correspondencias/sessao", {
+            method: "GET",
+            credentials: "include"
+        });
         return await res.json();
     } catch (error) {
         throw error;
@@ -28,9 +39,7 @@ export async function salvarCorrespondencia(correspondencia: Correspondencia) {
             const errorData = await res.json();
             throw errorData;
         }
-
         return await res.json();
-
     } catch (error) {
         throw error;
     }

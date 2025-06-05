@@ -10,24 +10,23 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class CorrespondenciaService
 {
 
-    public function buscarCorrespondencias(Request $request)
+     public function buscarCorrespondencias()
+    {
+        return Correspondencia::all();
+    }
+    public function buscarCorrespondenciasPorSessao(string $token)
     {
         $payload = JWTAuth::setToken(
-            $request->cookie("auth")
+            $token
         )->getPayload()->toArray();
 
         $emailUsuario = $payload["email"];
-        return Correspondencia::where("email_usuario", $emailUsuario);
+        return Correspondencia::where("email_usuario", $emailUsuario)->get();
     }
 
     public function buscarCorrespondencia(string $idCorrespondencia)
     {
         return Correspondencia::findOrFail($idCorrespondencia);
-    }
-
-    public function buscarCorrespondenciasPorEmail(string $emailUsuario)
-    {
-        return Correspondencia::where("email_usuario", $emailUsuario);
     }
 
     public function alterarStatusCorrespondencia(Status $novoStatus, string $idCorrespondencia): Correspondencia

@@ -89,14 +89,14 @@
 </template>
 <script setup lang="ts">
 import { fazerLogout } from '../../service/usuarios';
-import { buscarCorrespondencias } from '../../service/correspondencias';
+import { buscarCorrespondenciasPorSessao } from '../../service/correspondencias';
 import { formatDate } from '../../utils/formatter';
 import { onMounted, ref } from 'vue';
 
 const correspondencias = ref<Correspondencia[]>([]);
 
 onMounted(async() => {
-  const cor = await buscarCorrespondencias();
+  const cor = await buscarCorrespondenciasPorSessao();
   correspondencias.value = cor;
 })
 </script>

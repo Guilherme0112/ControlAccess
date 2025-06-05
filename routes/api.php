@@ -15,6 +15,7 @@ Route::middleware(JwtMiddleware::class)->put('/usuarios/{id}', [UsuarioControlle
 Route::middleware(JwtMiddleware::class)->delete('/usuarios/{id}', [UsuarioController::class,'destroy'])->name('usuario.destroy');
 
 Route::middleware(JwtMiddleware::class)->get('/correspondencias', [CorrespondenciaController::class,'index'])->name('correspondencia.index');
+Route::middleware(JwtMiddleware::class)->get('/correspondencias/sessao', [CorrespondenciaController::class,'show'])->name('correspondencia.show');
 Route::middleware(JwtMiddleware::class)->post('/correspondencias', [CorrespondenciaController::class,'store'])->name('correspondencia.store');
 Route::middleware(JwtMiddleware::class)->put('/correspondencias/{id}', [CorrespondenciaController::class,'update'])->name('correspondencia.update');
 Route::middleware(JwtMiddleware::class)->delete('/correspondencias/{id}', [CorrespondenciaController::class,'destroy'])->name('correspondencia.destroy');

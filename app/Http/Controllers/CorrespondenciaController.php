@@ -14,17 +14,17 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaController extends Controller
 {
-    public function index(CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
+    
+    public function index(CorrespondenciaService $correspondenciaService): JsonResponse
     {
-        return response()->json($correspondenciaService->buscarCorrespondencias($request));
+        return response()->json($correspondenciaService->buscarCorrespondencias());
     }
-
-
-    public function show(CorrespondenciaService $correspondenciaService): JsonResponse
+ 
+    public function show(CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
-        return response()->json($correspondenciaService->buscarCorrespondenciasPorUsuario());
+        $token = $request->cookie("auth");
+        return response()->json($correspondenciaService->buscarCorrespondenciasPorSessao($token));
     }
-
 
     public function store(Request $request, CorrespondenciaService $correspondenciaService): JsonResponse
     {
