@@ -187,6 +187,15 @@
                   Notificar recebimento
                 </button>
               </td>
+              <td v-if="correspondencia.status === 'aprovado'">
+                <div class="form-label">
+                  <label for="file_input" class="block text-sm font-medium text-gray-700">
+                    Escolha um arquivo
+                  </label>
+                  <input id="file_input" type="file"
+                    class="block w-20 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 py-2 px-3" />
+                </div>
+              </td>
               <td v-else class="px-6 py-4">
                 -
               </td>

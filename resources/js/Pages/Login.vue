@@ -1,7 +1,9 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
     <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Bem Vindo</h2>
+      <div class="mb-9">
+        <img src="logo.png" alt="Logo Athena Office">
+      </div>
       <form @submit.prevent="submit" class="space-y-6">
         <div>
           <label class="form-label">Email</label>
@@ -33,8 +35,8 @@ import { router } from '@inertiajs/vue3';
 
 const errors = ref<{ auth?: string[] }>({})
 const login = ref<LoginRequest>({
-  email: 'guimendesmen124@gmail.com',
-  senha: '123456'
+  email: '',
+  senha: ''
 })
 
 const submit = async () => {
