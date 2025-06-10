@@ -196,7 +196,8 @@
               </td>
               <td v-if="correspondencia.status === 'enviado'">
                 <div class="form-label">
-                  <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  @click="abrirFecharVisualizarEnvio(correspondencia.correspondencia)">
                     Visualizar envio
                   </button>
                 </div>
@@ -215,6 +216,8 @@
       </div>
     </main>
   </div>
+
+  <VisualizarEnvio :fechar="abrirFecharVisualizarEnvio" :src="'storage/' + correspondenciaSelecionada" :mostrar="statusVisualizarEnvio" />
 </template>
 
 <script setup lang="ts">
@@ -222,9 +225,12 @@ import { formatDate } from '../../utils/formatter';
 import { buscarCorrespondencias, editarCorrespondencia, notificacaoChegada, salvarCorrespondencia } from '../../service/correspondencias';
 import { onMounted, ref } from 'vue';
 import { fazerLogout } from '../../service/usuarios';
+import VisualizarEnvio from '@/Components/VisualizarEnvio.vue';
 
 const correspondencias = ref<Correspondencia[]>([]);
 const erros = ref<{ [key: string]: string[] }>({});
+const statusVisualizarEnvio = ref(false);
+const correspondenciaSelecionada = ref("");
 
 const correspondencia = ref<Correspondencia>({
   id: null,
@@ -244,8 +250,12 @@ const addArquivoCorrespondencia = async (event: Event) => {
     correspondencia.value.correspondencia = fileInput.files[0];
     return;
   }
-
   correspondencia.value.correspondencia = null;
+}
+
+const abrirFecharVisualizarEnvio = (src: string) => {
+  correspondenciaSelecionada.value = src;
+  statusVisualizarEnvio.value = !statusVisualizarEnvio.value;
 }
 
 const handleFileChange = async (event: Event, id: string) => {

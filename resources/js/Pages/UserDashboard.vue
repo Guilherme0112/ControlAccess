@@ -84,7 +84,8 @@
                 </td>
                 <td v-if="correspondencia.status === 'enviado'">
                   <div class="form-label">
-                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+                    @click="abrirFecharVisualizarEnvio(correspondencia.correspondencia)">
                       Visualizar envio
                     </button>
                   </div>
@@ -104,22 +105,32 @@
       </div>
     </main>
   </div>
+
+  <VisualizarEnvio :fechar="abrirFecharVisualizarEnvio" :src="'storage/' + correspondenciaSelecionada" :mostrar="statusVisualizarEnvio" />
+
 </template>
 <script setup lang="ts">
 import { fazerLogout } from '../../service/usuarios';
 import { aprovarAbertura, buscarCorrespondenciasPorSessao } from '../../service/correspondencias';
 import { formatDate } from '../../utils/formatter';
 import { onMounted, ref } from 'vue';
+import VisualizarEnvio from '@/Components/VisualizarEnvio.vue';
 
 const correspondencias = ref<Correspondencia[]>([]);
+const statusVisualizarEnvio = ref(false);
+const correspondenciaSelecionada = ref("");
 
 onMounted(async () => {
   const cor = await buscarCorrespondenciasPorSessao();
   correspondencias.value = cor;
 })
 
-const aprovarAberturaCorrespondencia = async (idCorrespondencia: string) => {
+const abrirFecharVisualizarEnvio = (src: string) => {
+  correspondenciaSelecionada.value = src;
+  statusVisualizarEnvio.value = !statusVisualizarEnvio.value;
+}
 
+const aprovarAberturaCorrespondencia = async (idCorrespondencia: string) => {
   try {
     await aprovarAbertura(idCorrespondencia);
     const correspondenciaAtual = correspondencias.value.find(c => c.id === idCorrespondencia);
