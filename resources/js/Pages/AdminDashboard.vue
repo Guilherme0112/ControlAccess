@@ -59,7 +59,7 @@
               <input v-model="correspondencia.email_usuario" type="email" required
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
               <p v-if="erros.errors?.email_usuario" class="text-red-500 text-sm mt-1">{{ erros.errors.email_usuario[0]
-                }}</p>
+              }}</p>
             </div>
             <div>
               <label class="form-label">Caixa Postal *</label>
@@ -72,8 +72,9 @@
               <label for="file_input" class="block text-sm font-medium text-gray-700">
                 Escolha um arquivo
               </label>
-              <input id="file_input" type="file"
+              <input id="file_input" type="file" @change="addArquivoCorrespondencia"
                 class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 py-2 px-3" />
+              <p v-if="erros.errors?.correspondencia" class="text-red-500 text-sm mt-1">{{ erros.errors.correspondencia[0] }}</p>
             </div>
             <div>
               <label class="form-label">Unidade *</label>
@@ -116,7 +117,6 @@
           </form>
         </Transition>
       </div>
-
 
       <!-- Tabela que exibe os dados -->
       <div class="relative overflow-x-auto shadow-md bg-white rounded-xl">
@@ -189,11 +189,16 @@
               </td>
               <td v-if="correspondencia.status === 'aprovado'">
                 <div class="form-label">
-                  <label for="file_input" class="block text-sm font-medium text-gray-700">
-                    Escolha um arquivo
-                  </label>
-                  <input id="file_input" type="file"
-                    class="block w-20 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 py-2 px-3" />
+                  <input type="file" @change="(event) => handleFileChange(event, correspondencia.id)"
+                    style="width: 9rem;"
+                    class="block text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 py-2 px-3" />
+                </div>
+              </td>
+              <td v-if="correspondencia.status === 'enviado'">
+                <div class="form-label">
+                  <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Visualizar envio
+                  </button>
                 </div>
               </td>
               <td v-else class="px-6 py-4">
@@ -214,7 +219,7 @@
 
 <script setup lang="ts">
 import { formatDate } from '../../utils/formatter';
-import { buscarCorrespondencias, notificacaoChegada, salvarCorrespondencia } from '../../service/correspondencias';
+import { buscarCorrespondencias, editarCorrespondencia, notificacaoChegada, salvarCorrespondencia } from '../../service/correspondencias';
 import { onMounted, ref } from 'vue';
 import { fazerLogout } from '../../service/usuarios';
 
@@ -233,6 +238,37 @@ const correspondencia = ref<Correspondencia>({
   correspondencia: null
 });
 
+const addArquivoCorrespondencia = async (event: Event) => {
+  const fileInput = event.target as HTMLInputElement;
+  if (fileInput.files && fileInput.files.length > 0) {
+    correspondencia.value.correspondencia = fileInput.files[0];
+    return;
+  }
+
+  correspondencia.value.correspondencia = null;
+}
+
+const handleFileChange = async (event: Event, id: string) => {
+  try {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      correspondencia.value.correspondencia = fileInput.files[0];
+      correspondencia.value.id = id;
+      correspondencia.value.status = "";
+      const confirmar = confirm("Você realmente deseja enviar este arquivo?")
+      if (!confirmar) return;
+
+      const res = await editarCorrespondencia(correspondencia.value);
+
+      const correspondenciaAtual = correspondencias.value.find(c => c.id === id);
+      if (correspondenciaAtual) {
+        correspondenciaAtual.status = res["status"];
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+};
 
 onMounted(async () => {
   const cor = await buscarCorrespondencias();
@@ -267,11 +303,10 @@ const submit = async () => {
       correspondencia: null
     };
   } catch (error: any) {
-    console.log(error);
+    // console.log(error)
     erros.value = error;
   }
 }
-
 
 const mostrarFormulario = ref(false)
 const toggleFormulario = () => {

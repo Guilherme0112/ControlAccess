@@ -82,6 +82,13 @@
                     Aprovar Abertura
                   </button>
                 </td>
+                <td v-if="correspondencia.status === 'enviado'">
+                  <div class="form-label">
+                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                      Visualizar envio
+                    </button>
+                  </div>
+                </td>
                 <td v-else class="px-6 py-4">
                   -
                 </td>

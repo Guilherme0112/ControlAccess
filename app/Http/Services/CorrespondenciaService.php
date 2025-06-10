@@ -5,12 +5,13 @@ namespace App\Http\Services;
 use App\Http\Enum\Status;
 use App\Models\Correspondencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaService
 {
 
-     public function buscarCorrespondencias()
+    public function buscarCorrespondencias()
     {
         return Correspondencia::all();
     }
@@ -51,24 +52,47 @@ class CorrespondenciaService
             "correspondencia" => "nullable|file|mimes:png,jpg,jpeg|max:2048"
         ]);
 
+        if ($request->hasFile('correspondencia')) {
+            $caminho = $request->file('correspondencia')->store('correspondencias', 'public');
+            $validated['correspondencia'] = $caminho;
+            $validated["status"] = Status::ENVIADO;
+        }
+
         return Correspondencia::create($validated);
     }
 
     public function editarCorrespondencia(Request $request, string $id): Correspondencia
     {
+        // Validação dos dados recebidos
         $validated = $request->validate([
-            "nome" => "required",
-            "email_usuario" => "required|email|exists:usuarios,email",
-            "caixa_postal" => "required",
-            "unidade" => "required",
-            "remetente" => "required",
-            "status" => "required",
-            "data_recebimento" => "required|date",
-            "correspondencia" => "nullable|file|mimes:png,jpg,jpeg|max:2048"
+            "nome" => "sometimes|nullable|string|max:255",
+            "email_usuario" => "sometimes|nullable|email|exists:usuarios,email",
+            "caixa_postal" => "sometimes|nullable|string|max:255",
+            "unidade" => "sometimes|nullable|string|max:255",
+            "remetente" => "sometimes|nullable|string|max:255",
+            "status" => "sometimes|nullable|string|in:cadastrado,notificado,aprovado,enviado",
+            "data_recebimento" => "sometimes|nullable|date",
+            "correspondencia" => "sometimes|file|mimes:png,jpg,jpeg|max:2048"
         ]);
 
         $correspondencia = Correspondencia::findOrFail($id);
-        $correspondencia->update($validated);
+
+        if ($request->hasFile('correspondencia')) {
+            if ($correspondencia["correspondencia"]) {
+                Storage::disk('public')->delete($correspondencia["correspondencia"]);
+            }
+
+            $path = $request->file('correspondencia')->store("correspondencias", "public");
+            $validated['correspondencia'] = $path;
+            $correspondencia["status"] = Status::ENVIADO;
+        }
+
+        $dadosParaAtualizar = collect($validated)
+            ->filter(fn($valor) => !is_null($valor))
+            ->all();
+
+        $correspondencia->update($dadosParaAtualizar);
+
         return $correspondencia;
     }
 
