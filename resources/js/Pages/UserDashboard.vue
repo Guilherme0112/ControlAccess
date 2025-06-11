@@ -76,23 +76,26 @@
                   {{ correspondencia.status || '-' }}
                 </td>
                 </td>
-                <td v-if="correspondencia.status === 'cadastrado' || correspondencia.status === 'notificado'">
-                  <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="aprovarAberturaCorrespondencia(correspondencia.id)">
-                    Aprovar Abertura
-                  </button>
-                </td>
-                <td v-if="correspondencia.status === 'enviado'">
-                  <div class="form-label">
-                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-                    @click="abrirFecharVisualizarEnvio(correspondencia.correspondencia)">
+                <td>
+                  <div v-if="correspondencia.status === 'cadastrado' || correspondencia.status === 'notificado'">
+                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      @click="aprovarAberturaCorrespondencia(correspondencia.id)">
+                      Aprovar Abertura
+                    </button>
+                  </div>
+
+                  <div class="form-label" v-else-if="correspondencia.status === 'enviado'">
+                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      @click="abrirFecharVisualizarEnvio(correspondencia.correspondencia)">
                       Visualizar envio
                     </button>
                   </div>
-                </td>
+
                 <td v-else class="px-6 py-4">
                   -
                 </td>
+                </td>
+
               </tr>
               <tr v-else>
                 <td class="px-6 py-4 text-center text-gray-500" colspan="8">
@@ -106,7 +109,8 @@
     </main>
   </div>
 
-  <VisualizarEnvio :fechar="abrirFecharVisualizarEnvio" :src="'storage/' + correspondenciaSelecionada" :mostrar="statusVisualizarEnvio" />
+  <VisualizarEnvio :fechar="abrirFecharVisualizarEnvio" :src="'storage/' + correspondenciaSelecionada"
+    :mostrar="statusVisualizarEnvio" />
 
 </template>
 <script setup lang="ts">
