@@ -19,12 +19,6 @@
             <thead class="text-xs text-gray-900 uppercase">
               <tr>
                 <th scope="col" class="px-6 py-3">
-                  Nome
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  Email
-                </th>
-                <th scope="col" class="px-6 py-3">
                   Caixa Postal
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -48,12 +42,6 @@
               <tr class="bg-white" v-for="correspondencia in correspondencias" :key="correspondencia.id"
                 v-if="correspondencias.length > 0">
                 <td class="px-6 py-4">
-                  {{ correspondencia.nome || "-" }}
-                </td>
-                <td class="px-6 py-4">
-                  {{ correspondencia.email_usuario || "-" }}
-                </td>
-                <td class="px-6 py-4">
                   {{ correspondencia.caixa_postal || "-" }}
                 </td>
                 <td class="px-6 py-4">
@@ -66,15 +54,15 @@
                   {{ correspondencia.remetente || "-" }}
                 </td>
                 <td>
-                <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
-                  'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
-                  'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
-                  'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
-                }">
-                  {{ correspondencia.status || '-' }}
-                </td>
+                  <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
+                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
+                    'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
+                  }">
+                    {{ correspondencia.status || '-' }}
+                  </td>
                 </td>
                 <td>
                   <div v-if="correspondencia.status === 'cadastrado' || correspondencia.status === 'notificado'">
@@ -109,7 +97,9 @@
     </main>
   </div>
 
-  <VisualizarEnvio :fechar="abrirFecharVisualizarEnvio" :src="'storage/' + correspondenciaSelecionada"
+  <VisualizarEnvio 
+    :fechar="abrirFecharVisualizarEnvio" 
+    :src="'storage/' + correspondenciaSelecionada"
     :mostrar="statusVisualizarEnvio" />
 
 </template>

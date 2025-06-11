@@ -111,7 +111,9 @@
             </div>
             <div class="md:col-span-2">
               <button type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+                      :class="{'opacity-50 cursor-not-allowed': loadSubmit}"
+                      :disabled="loadSubmit">
                 Criar Registro
               </button>
             </div>
@@ -122,7 +124,6 @@
       <!-- Tabela que exibe os dados -->
       <div class="relative overflow-x-auto shadow-md bg-white rounded-xl">
         <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
-          <label for="table-search" class="sr-only">Search</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
               <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 m-4" aria-hidden="true" fill="currentColor"
@@ -134,7 +135,7 @@
             </div>
             <input type="text" id="table-search"
               class="m-4 block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-ligth-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-ligth-700 dark:border-gray-600 dark:placeholder-gray-400 dark:gray-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Busque por usuários" v-model="termoBusca">
+              placeholder="Busque por email" v-model="termoBusca">
           </div>
         </div>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -252,6 +253,7 @@ const erros = ref<{ [key: string]: string[] }>({});
 const statusVisualizarEnvio = ref(false);
 const correspondenciaSelecionada = ref("");
 const termoBusca = ref('');
+const loadSubmit = ref(false);
 
 
 const correspondenciasFiltradas = computed(() => {
@@ -306,6 +308,7 @@ const handleFileChange = async (event: Event, id: string) => {
       const correspondenciaAtual = correspondencias.value.find(c => c.id === id);
       if (correspondenciaAtual) {
         correspondenciaAtual.status = res["status"];
+        correspondenciaAtual.correspondencia = res["correspondencia"];
       }
     }
   } catch (error) {
@@ -331,6 +334,7 @@ const notificarChegada = async (email: string, id: string) => {
 }
 
 const submit = async () => {
+  loadSubmit.value = true;
   try {
     const res = await salvarCorrespondencia(correspondencia.value);
     correspondencias.value.push(res);
@@ -348,6 +352,8 @@ const submit = async () => {
   } catch (error: any) {
     // console.log(error)
     erros.value = error;
+  } finally {
+    loadSubmit.value = false;
   }
 }
 
