@@ -79,9 +79,12 @@
             </div>
             <div>
               <label class="form-label">Unidade *</label>
-              <input v-model="correspondencia.unidade" type="text" required
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-              <p v-if="erros.errors?.unidade" class="text-red-500 text-sm mt-1">{{ erros.errors.unidade[0] }}</p>
+              <select v-model="correspondencia.unidade" required
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="" disabled selected>Selecione uma unidade</option>
+                <option value="VITORIA">Vitória</option>
+              </select>
+              <p v-if="erros.errors?.status" class="text-red-500 text-sm mt-1">{{ erros.errors.status[0] }}</p>
             </div>
             <div>
               <label class="form-label">Status *</label>
@@ -203,7 +206,9 @@
               <td>
                 <div v-if="correspondencia.status === 'cadastrado'">
                   <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)">
+                    @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)"
+                    :class="{'opacity-50 cursor-not-allowed': loadNotificarEmail}"
+                    :disabled="loadNotificarEmail">
                     Notificar recebimento
                   </button>
                 </div>
@@ -254,6 +259,7 @@ const statusVisualizarEnvio = ref(false);
 const correspondenciaSelecionada = ref("");
 const termoBusca = ref('');
 const loadSubmit = ref(false);
+const loadNotificarEmail = ref(false);
 
 
 const correspondenciasFiltradas = computed(() => {
@@ -322,6 +328,7 @@ onMounted(async () => {
 })
 
 const notificarChegada = async (email: string, id: string) => {
+  loadNotificarEmail.value = true;
   try {
     await notificacaoChegada(email, id);
     const correspondenciaAtual = correspondencias.value.find(c => c.id === id);
@@ -330,6 +337,8 @@ const notificarChegada = async (email: string, id: string) => {
     }
   } catch (error) {
     console.log(error);
+  } finally {
+    loadNotificarEmail.value = false;
   }
 }
 

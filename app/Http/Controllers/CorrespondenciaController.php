@@ -68,7 +68,7 @@ class CorrespondenciaController extends Controller
             $idCorrespondencia = $request->input("idCorrespondencia");
             $usuario = $usuarioService->buscarUsuarioPorEmail($email);
 
-            $emailService->sendEmail($usuario);
+            $emailService->sendEmailNotificacao($usuario);
 
             $correspondenciaService->alterarStatusCorrespondencia(Status::NOTIFICADO, $idCorrespondencia);
 

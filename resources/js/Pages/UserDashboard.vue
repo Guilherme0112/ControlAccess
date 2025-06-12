@@ -67,7 +67,9 @@
                 <td>
                   <div v-if="correspondencia.status === 'cadastrado' || correspondencia.status === 'notificado'">
                     <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      @click="aprovarAberturaCorrespondencia(correspondencia.id)">
+                      @click="aprovarAberturaCorrespondencia(correspondencia.id)"
+                      :class="{'opacity-50 cursor-not-allowed': loadAprovarEnvio}"
+                      :disabled="loadAprovarEnvio">
                       Aprovar Abertura
                     </button>
                   </div>
@@ -113,6 +115,7 @@ import VisualizarEnvio from '@/Components/VisualizarEnvio.vue';
 const correspondencias = ref<Correspondencia[]>([]);
 const statusVisualizarEnvio = ref(false);
 const correspondenciaSelecionada = ref("");
+const loadAprovarEnvio = ref(false);
 
 onMounted(async () => {
   const cor = await buscarCorrespondenciasPorSessao();
@@ -125,12 +128,15 @@ const abrirFecharVisualizarEnvio = (src: string) => {
 }
 
 const aprovarAberturaCorrespondencia = async (idCorrespondencia: string) => {
+  loadAprovarEnvio.value = true;
   try {
     await aprovarAbertura(idCorrespondencia);
     const correspondenciaAtual = correspondencias.value.find(c => c.id === idCorrespondencia);
     correspondenciaAtual.status = 'aprovado';
   } catch (error) {
     console.log(error);
+  } finally {
+    loadAprovarEnvio.value = false;
   }
 
 }

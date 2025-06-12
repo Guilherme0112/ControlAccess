@@ -11,6 +11,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class CorrespondenciaService
 {
 
+    protected EmailService $emailService;
+    protected UsuarioService $usuarioService;
+
+    public function __construct(EmailService $emailService, UsuarioService $usuarioService)
+    {
+        $this->emailService = $emailService;
+        $this->usuarioService = $usuarioService;
+    }
+
     public function buscarCorrespondencias()
     {
         return Correspondencia::all();
@@ -56,6 +65,17 @@ class CorrespondenciaService
             $caminho = $request->file('correspondencia')->store('correspondencias', 'public');
             $validated['correspondencia'] = $caminho;
             $validated["status"] = Status::ENVIADO;
+
+            $token = $request->cookie("auth");
+            $payload = JWTAuth::setToken($token)->getPayload()->toArray();
+            
+            $loginEmail = $payload["email"];
+            $usuario = $this->usuarioService->buscarUsuarioPorEmail($loginEmail);
+
+            $path = $request->file('correspondencia')->store("correspondencias", "public");
+            $validated['correspondencia'] = $path;
+            $correspondencia["status"] = Status::ENVIADO;
+            $this->emailService->sendEmailNotificacaoAnexo($usuario);
         }
 
         return Correspondencia::create($validated);
@@ -82,9 +102,16 @@ class CorrespondenciaService
                 Storage::disk('public')->delete($correspondencia["correspondencia"]);
             }
 
+            $token = $request->cookie("auth");
+            $payload = JWTAuth::setToken($token)->getPayload()->toArray();
+            
+            $loginEmail = $payload["email"];
+            $usuario = $this->usuarioService->buscarUsuarioPorEmail($loginEmail);
+
             $path = $request->file('correspondencia')->store("correspondencias", "public");
             $validated['correspondencia'] = $path;
             $correspondencia["status"] = Status::ENVIADO;
+            $this->emailService->sendEmailNotificacaoAnexo($usuario);
         }
 
         $dadosParaAtualizar = collect($validated)
