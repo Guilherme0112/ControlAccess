@@ -73,8 +73,7 @@ class CorrespondenciaService
             $usuario = $this->usuarioService->buscarUsuarioPorEmail($loginEmail);
 
             $path = $request->file('correspondencia')->store("correspondencias", "public");
-            $validated['correspondencia'] = $path;
-            $correspondencia["status"] = Status::ENVIADO;
+            $validated['correspondencia'] = $path;   
             $this->emailService->sendEmailNotificacaoAnexo($usuario);
         }
 

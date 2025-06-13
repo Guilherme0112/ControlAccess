@@ -114,9 +114,8 @@
             </div>
             <div class="md:col-span-2">
               <button type="submit"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-                      :class="{'opacity-50 cursor-not-allowed': loadSubmit}"
-                      :disabled="loadSubmit">
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+                :class="{ 'opacity-50 cursor-not-allowed': loadSubmit }" :disabled="loadSubmit">
                 Criar Registro
               </button>
             </div>
@@ -126,7 +125,7 @@
 
       <!-- Tabela que exibe os dados -->
       <div class="relative overflow-x-auto shadow-md bg-white rounded-xl">
-        <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+        <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-start pb-4">
           <div class="relative">
             <div class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
               <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 m-4" aria-hidden="true" fill="currentColor"
@@ -139,6 +138,18 @@
             <input type="text" id="table-search"
               class="m-4 block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-ligth-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-ligth-700 dark:border-gray-600 dark:placeholder-gray-400 dark:gray-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Busque por email" v-model="termoBusca">
+          </div>
+          <div>
+            <div class="relative w-48 p-4">
+              <select id="filtroStatus" v-model="statusSelecionado"
+                class="cursor-pointer appearance-none w-full py-2 px-3 text-sm border border-black-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="" selected>Todos</option>
+                <option value="cadastrado">Cadastrado</option>
+                <option value="notificado">Notificado</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="enviado">Enviado</option>
+              </select>
+            </div>
           </div>
         </div>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -193,22 +204,21 @@
                 {{ correspondencia.remetente || "-" }}
               </td>
               <td>
-                <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
-                  'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
-                  'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
-                  'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
-                }">
-                  {{ correspondencia.status || '-' }}
-                </td>
+              <td class="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full" :class="{
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': correspondencia.status === 'cadastrado',
+                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': correspondencia.status === 'notificado',
+                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': correspondencia.status === 'aprovado',
+                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': correspondencia.status === 'enviado',
+                'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300': !correspondencia.status
+              }">
+                {{ correspondencia.status || '-' }}
+              </td>
               </td>
               <td>
                 <div v-if="correspondencia.status === 'cadastrado'">
                   <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     @click="notificarChegada(correspondencia.email_usuario, correspondencia.id)"
-                    :class="{'opacity-50 cursor-not-allowed': loadNotificarEmail}"
-                    :disabled="loadNotificarEmail">
+                    :class="{ 'opacity-50 cursor-not-allowed': loadNotificarEmail }" :disabled="loadNotificarEmail">
                     Notificar recebimento
                   </button>
                 </div>
@@ -260,17 +270,16 @@ const correspondenciaSelecionada = ref("");
 const termoBusca = ref('');
 const loadSubmit = ref(false);
 const loadNotificarEmail = ref(false);
-
+const statusSelecionado = ref('');
 
 const correspondenciasFiltradas = computed(() => {
-  if (!termoBusca.value) return correspondencias.value;
-
-  const termo = termoBusca.value.toLowerCase();
-
-  return correspondencias.value.filter(c =>
-    c.email_usuario?.toLowerCase().includes(termo)
-  );
+  return correspondencias.value.filter(c => {
+    const correspondeStatus = !statusSelecionado.value || c.status?.toLowerCase() === statusSelecionado.value.toLowerCase();
+    const correspondeBusca = !termoBusca.value || c.email_usuario?.toLowerCase().includes(termoBusca.value.toLowerCase());
+    return correspondeStatus && correspondeBusca;
+  });
 });
+
 
 
 const correspondencia = ref<Correspondencia>({
