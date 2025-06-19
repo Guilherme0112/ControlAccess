@@ -7,11 +7,14 @@
 
 ## Visão Geral
 
+Uma plataforma de gestão de correspondências para empresas. Possui dois tipos de acesso: admin e usuário. O admin é responsável por cadastrar usuários e registrar correspondências que chegam. Quando uma correspondência é cadastrada, o cliente recebe uma notificação por e-mail e pode acessá-la através do seu login na plataforma. O cliente tem a opção de autorizar a abertura da correspondência. Após a autorização, o admin pode abrir, digitalizar e enviar o conteúdo para o cliente diretamente pela plataforma, incluindo anexos. Toda movimentação gera notificações por e-mail para manter o cliente informado.
+
+---
+
 Esta API foi desenvolvida com Laravel 12 e PHP 8.2.  
 Possui rotas que utilizam Inertia.js para o front-end e rotas REST para a API com autenticação JWT.
 
 ---
-
 ## Estrutura de pastas
 
 ```
