@@ -142,7 +142,7 @@
           <div>
             <div class="relative w-48 p-4">
               <select id="filtroStatus" v-model="statusSelecionado"
-                class="cursor-pointer appearance-none w-full py-2 px-3 text-sm border border-black-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="cursor-pointer appearance-none w-full py-2 px-3 text-sm border border-black-300 rounded-md bg-white focus:outline-none focus:border-blue-500">
                 <option value="" selected>Todos</option>
                 <option value="cadastrado">Cadastrado</option>
                 <option value="notificado">Notificado</option>
@@ -225,6 +225,7 @@
                 <div v-else-if="correspondencia.status === 'aprovado'" class="form-label">
                   <input type="file" @change="(event) => handleFileChange(event, correspondencia.id)"
                     style="width: 9rem;"
+                    :disabled="loadEnviarAnexo"
                     class="block text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 py-2 px-3" />
                 </div>
 
@@ -270,6 +271,7 @@ const correspondenciaSelecionada = ref("");
 const termoBusca = ref('');
 const loadSubmit = ref(false);
 const loadNotificarEmail = ref(false);
+const loadEnviarAnexo = ref(false);
 const statusSelecionado = ref('');
 
 const correspondenciasFiltradas = computed(() => {
@@ -309,6 +311,7 @@ const abrirFecharVisualizarEnvio = (src: string) => {
 }
 
 const handleFileChange = async (event: Event, id: string) => {
+  loadEnviarAnexo.value = true;
   try {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
@@ -328,6 +331,8 @@ const handleFileChange = async (event: Event, id: string) => {
     }
   } catch (error) {
     console.log(error)
+  } finally {
+      loadEnviarAnexo.value = true;
   }
 };
 
