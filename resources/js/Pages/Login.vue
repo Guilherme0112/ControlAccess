@@ -1,23 +1,27 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
     <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Bem Vindo</h2>
+      <div class="mb-9">
+        <img src="logo.png" alt="Logo Athena Office">
+      </div>
       <form @submit.prevent="submit" class="space-y-6">
         <div>
           <label class="form-label">Email</label>
           <input v-model="login.email" type="email" required
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your email" />
+            placeholder="Digite seu email" />
         </div>
         <div>
           <label class="form-label">Senha</label>
           <input v-model="login.senha" type="password" required
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your password" />
+            placeholder="Digite sua senha" />
         </div>
         <p v-if="errors[0]" class="text-red-500 text-sm mt-1">{{ errors[0] }}</p>
         <button type="submit"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+                :class="{'opacity-50 cursor-not-allowed': load}"
+                :disabled="load">
           Entrar
         </button>
       </form>
@@ -32,18 +36,22 @@ import { fazerLogin } from '../../service/usuarios';
 import { router } from '@inertiajs/vue3';
 
 const errors = ref<{ auth?: string[] }>({})
+const load = ref(false);
 const login = ref<LoginRequest>({
   email: '',
   senha: ''
 })
 
 const submit = async () => {
+  load.value = true;
   try {
     await fazerLogin(login.value);
     router.visit("/admin");
   } catch (e: any) {
     // console.log(e)
     errors.value = e.errors.auth
+  } finally {
+    load.value = false;
   }
 };
 </script>

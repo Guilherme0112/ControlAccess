@@ -3,9 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\Usuario;
-use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class UsuarioService
 {
@@ -27,9 +25,7 @@ class UsuarioService
             "nome" => "required",
             "email" => "required|email",
             "senha" => "required|string|min:6",
-
         ]);
-
         return Usuario::create($validated);
     }
 
@@ -38,7 +34,6 @@ class UsuarioService
         $validated = $request->validate([
             "nome" => "required",
         ]);
-
         $usuario = Usuario::findOrFail($id);
         $usuario->update($validated);
         return $usuario;

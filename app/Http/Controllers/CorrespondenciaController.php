@@ -10,20 +10,21 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CorrespondenciaController extends Controller
 {
+    
     public function index(CorrespondenciaService $correspondenciaService): JsonResponse
     {
         return response()->json($correspondenciaService->buscarCorrespondencias());
     }
-
-    
-    public function show(CorrespondenciaService $correspondenciaService): JsonResponse
+ 
+    public function show(CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
-        return response()->json($correspondenciaService->buscarCorrespondenciasPorUsuario());
+        $token = $request->cookie("auth");
+        return response()->json($correspondenciaService->buscarCorrespondenciasPorSessao($token));
     }
-
 
     public function store(Request $request, CorrespondenciaService $correspondenciaService): JsonResponse
     {
@@ -59,7 +60,7 @@ class CorrespondenciaController extends Controller
         }
     }
 
-    
+
     public function notificarRecebimento(EmailService $emailService, UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
     {
         try {
@@ -67,15 +68,34 @@ class CorrespondenciaController extends Controller
             $idCorrespondencia = $request->input("idCorrespondencia");
             $usuario = $usuarioService->buscarUsuarioPorEmail($email);
 
-            $emailService->sendEmail($usuario);
+            $emailService->sendEmailNotificacao($usuario);
 
             $correspondenciaService->alterarStatusCorrespondencia(Status::NOTIFICADO, $idCorrespondencia);
 
             return response()->json(["success" => "Usuário notificado com sucesso"]);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()], 500);
         }
+    }
 
+    public function aprovarAbertura(UsuarioService $usuarioService, CorrespondenciaService $correspondenciaService, Request $request): JsonResponse
+    {
+        try {
+
+            $token = $request->cookie("auth");
+            $idCorrespondencia = $request->input("idCorrespondencia");
+       
+            $payload = JWTAuth::setToken($token)->getPayload()->toArray();
+            
+            $loginEmail = $payload["email"];
+            $usuarioService->buscarUsuarioPorEmail($loginEmail);
+
+            $correspondenciaService->alterarStatusCorrespondencia(Status::APROVADO, $idCorrespondencia);
+
+            return response()->json(["success" => "Usuário notificado com sucesso"]);
+        } catch (Exception $e) {
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(string $idCorrespondencia, CorrespondenciaService $correspondenciaService): JsonResponse

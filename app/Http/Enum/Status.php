@@ -6,5 +6,6 @@ enum Status: string
 {
     case CADASTRADO = 'cadastrado';
     case NOTIFICADO = 'notificado';
+    case APROVADO = 'aprovado';
     case ENVIADO = 'enviado';
 }

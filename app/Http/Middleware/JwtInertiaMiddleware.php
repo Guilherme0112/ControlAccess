@@ -12,25 +12,21 @@ class JwtInertiaMiddleware extends Middleware
     public function handle($request, Closure $next)
     {
         try {
-            $cookieHeader = $request->header('cookie');
+            $cookieHeader = $request->header("cookie");
             $token = null;
 
-            if (!$cookieHeader) {
-                throw new Exception("Unauthorized");
-            }
-            
-            preg_match('/auth=([^;]+)/', $cookieHeader, $matches);
-
-            if (isset($matches[1])) {
-                $token = urldecode($matches[1]);
-            }
-
-            if (!$token) {
-                throw new Exception("Unauthorized");
+            if ($cookieHeader) {
+                $cookies = explode(';', $cookieHeader);
+                foreach ($cookies as $cookie) {
+                    $cookie = trim($cookie);
+                    if (str_starts_with($cookie, 'auth=')) {
+                        $token = substr($cookie, strlen('auth='));
+                        break;
+                    }
+                }
             }
 
-            JWTAuth::setToken($token);
-
+            JWTAuth::setToken($token)->authenticate();
             return $next($request);
 
         } catch (Exception $e) {

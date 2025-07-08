@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Notificação de Correspondência</title>
+  <title>Notificação de envio de Anexo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -40,13 +40,13 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">📬 Correspondência Recebida</div>
+    <div class="header">📬 Anexo disponibilizado</div>
 
     <p>Olá <strong>{{ $dados['nome'] }}</strong>,</p>
 
-    <p>Informamos que uma nova correspondência foi recebida para você:</p>
+    <p>Informamos que o anexo da sua correspondência foi disponibilizado para você:</p>
 
-    <p>Favor, aprovar a abertura da sua correspondência na nossa plataforma <a href="https://www.youtube.com/watch?v=I0lA3rHbFuE&pp=ygUPdmFpIG5leW1hciBsdWxh">clicando aqui</a></p>
+    <p>Favor, acesse a nossa plataforma <a href="https://www.youtube.com/watch?v=I0lA3rHbFuE&pp=ygUPdmFpIG5leW1hciBsdWxh">clicando aqui</a> e visualize o anexo.</p>
 
     <div class="footer">
       Esta é uma mensagem automática. Não é necessário respondê-la.
